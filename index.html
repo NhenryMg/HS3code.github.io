@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hs3code Encriptador</title>
+    <style>
+        :root {
+            /* Tema claro (default) */
+            --bg-body: #f0f2f5;
+            --bg-container: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --border: #dddddd;
+            --primary: #3498db;
+            --primary-hover: #2980b9;
+            --success: #2ecc71;
+            --success-hover: #27ae60;
+            --danger: #e74c3c;
+            --danger-hover: #c0392b;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode {
+            /* Tema oscuro */
+            --bg-body: #1a1a2e;
+            --bg-container: #16213e;
+            --text-primary: #f0f0f0;
+            --text-secondary: #cccccc;
+            --border: #555555;
+            --primary: #4a89dc;
+            --primary-hover: #3a6cb9;
+            --success: #48cfad;
+            --success-hover: #37bc9b;
+            --danger: #ed5565;
+            --danger-hover: #da4453;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: all 0.4s ease;
+        }
+
+        .container {
+            background-color: var(--bg-container);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        /* Switch de tema */
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin: 0 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "🌙";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        input:checked + .slider {
+            background-color: #4a89dc;
+        }
+
+        input:checked + .slider:before {
+            content: "☀️";
+            transform: translateX(26px);
+        }
+
+        /* Resto de estilos */
+        h1 {
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-secondary);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+            height: 100px;
+            background-color: var(--bg-container);
+            color: var(--text-primary);
+            transition: all 0.4s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        #encryptBtn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        #encryptBtn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #decryptBtn {
+            background-color: var(--success);
+            color: white;
+        }
+
+        #decryptBtn:hover {
+            background-color: var(--success-hover);
+        }
+
+        #clearBtn {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        #clearBtn:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: var(--bg-container);
+            border: 1px solid var(--border);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info {
+            background-color: #f8f9fa00;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-switch">
+        <span>☀️</span>
+        <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider"></span>
+        </label>
+        <span>🌙</span>
+    </div>
+
+    <div class="container">
+        <h1>Hs3code Encriptador</h1>
+
+        <div class="info">
+            Este sistema fue diseñado por HeNrYmG
+            GitHub: <a href="https://github.com/NhenryMg" target="_blank" class="info">NhenryMg </a>
+        </div>
+        
+        <div class="input-group">
+            <label for="message">Mensaje:</label>
+            <textarea id="message" placeholder="Escribe tu mensaje aquí..."></textarea>
+        </div>
+        
+        <div class="button-group">
+            <button id="encryptBtn">Encriptar</button>
+            <button id="decryptBtn">Desencriptar</button>
+            <button id="clearBtn">Limpiar</button>
+        </div>
+        
+        <div id="resultContainer" class="result hidden">
+            <label>Resultado:</label>
+            <textarea id="result" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Función para cambiar el tema
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            // Guardar preferencia en localStorage
+            localStorage.setItem('darkMode', themeToggle.checked);
+        });
+
+        // Cargar preferencia de tema al iniciar
+        if (localStorage.getItem('darkMode') === 'true') {
+            themeToggle.checked = true;
+            document.body.classList.add('dark-mode');
+        }
+
+        // Resto del código de encriptación/desencriptación
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.getElementById('message');
+            const resultTextarea = document.getElementById('result');
+            const resultContainer = document.getElementById('resultContainer');
+            const encryptBtn = document.getElementById('encryptBtn');
+            const decryptBtn = document.getElementById('decryptBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const RANDOM_CHARS = 2;
+            
+            function generateRandomChar() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                return chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            function encryptMessage(message) {
+                let encrypted = [];
+                for (let i = 0; i < message.length; i++) {
+                    for (let j = 0; j < RANDOM_CHARS; j++) {
+                        encrypted.push(generateRandomChar());
+                    }
+                    encrypted.push(message[i]);
+                }
+                return encrypted.join('');
+            }
+            
+            function decryptMessage(encryptedMessage) {
+                let decrypted = [];
+                for (let i = RANDOM_CHARS; i < encryptedMessage.length; i += RANDOM_CHARS + 1) {
+                    decrypted.push(encryptedMessage[i]);
+                }
+                return decrypted.join('');
+            }
+            
+            encryptBtn.addEventListener('click', function() {
+                const message = messageInput.value;
+                if (message.trim() === '') {
+                    alert('Por favor ingresa un mensaje');
+                    return;
+                }
+                const encrypted = encryptMessage(message);
+                resultTextarea.value = encrypted;
+                resultContainer.classList.remove('hidden');
+            });
+            
+            decryptBtn.addEventListener('click', function() {
+                const message = messageInput.value;
+                if (message.trim() === '') {
+                    alert('Por favor ingresa un mensaje encriptado');
+                    return;
+                }
+                try {
+                    const decrypted = decryptMessage(message);
+                    resultTextarea.value = decrypted;
+                    resultContainer.classList.remove('hidden');
+                } catch (e) {
+                    alert('Error al desencriptar. Verifica que el mensaje esté correctamente encriptado.');
+                }
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                messageInput.value = '';
+                resultTextarea.value = '';
+                resultContainer.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
